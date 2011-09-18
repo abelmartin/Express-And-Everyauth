@@ -7,14 +7,13 @@ html
     a#Home(href="/") Home
     br
     a#Home(href="/private") Private
-    ul#Authenticate
-      li
-        a(href="/sign_in") Sign In
-      li or
-      li
-        a(href="/sign_up") Sign Up
-     ul#Authed
-      li Hi Abel!
-      li
-        a(href="/sign_out")
+    - if(everyauth.loggedIn)
+      ul#Authed
+        li Hi Abel!
+        li
+          a(href="/sign_out")
+    - else
+      ul#Authenticate
+        li
+          a(href="/auth/twitter") auth with twitter
     != body
