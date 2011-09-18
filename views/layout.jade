@@ -9,9 +9,14 @@ html
     a#Home(href="/private") Private
     - if(everyauth.loggedIn)
       ul#Authed
-        li Hi Abel!
         li
-          a(href="/sign_out")
+          Hi #{everyauth.twitter.user.name}!
+        li
+          img(src="#{everyauth.twitter.user.profile_image_url}")
+
+        // li= JSON.stringify(everyauth.twitter.user)
+        li
+          a(href="/logout") Sign Out
     - else
       ul#Authenticate
         li

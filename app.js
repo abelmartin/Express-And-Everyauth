@@ -1,14 +1,21 @@
-
 // Module dependencies.
 
 var express = require('express'),
-    /*connect = require('connect'),*/
     everyauth = require('everyauth'),
-    /*auth = require('connect-auth'),*/
     conf = require('./conf');
 
 var usersById = {};
 var nextUserId = 0;
+var usersByTwitId = {};
+
+everyauth
+  .twitter
+    .consumerKey(conf.twit.consumerKey)
+    .consumerSecret(conf.twit.consumerSecret)
+    .findOrCreateUser( function (sess, accessToken, accessSecret, twitUser) {
+      return usersByTwitId[twitUser.id] || (usersByTwitId[twitUser.id] = addUser('twitter', twitUser));
+    })
+    .redirectPath('/');
 
 function addUser (source, sourceUser) {
   var user;
@@ -25,33 +32,25 @@ function addUser (source, sourceUser) {
 
 everyauth.debug = true;
 
-everyauth
-  .twitter
-    .consumerKey(conf.twit.consumerKey)
-    .consumerSecret(conf.twit.consumerSecret)
-    .findOrCreateUser( function (sess, accessToken, accessSecret, twitUser) {
-      return usersByTwitId[twitUser.id] || (usersByTwitId[twitUser.id] = addUser('twitter', twitUser));
-    })
-/*.findOrCreateUser(function(session, accessToken, accessTokenSecret, twitterUserData) {*/
-/*var promise = this.Promise();*/
-/*users.findOrCreateByTwitterData(twitterUserData, accessToken, accessTokenSecret, promise);*/
-/*return promise;*/
-/*})*/
-    .redirectPath('/');
+/*everyauth.everymodule.findUserById( function (userId, callback) {*/
+/*User.findById(userId, callback);*/
+/*// callback has the signature, function (err, user) {...}*/
+/*});*/
+
 
 var app = module.exports = express.createServer();
 
 // Configuration
 
 app.configure(function(){
-  app.use(express.bodyParser());
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'jade');
   app.use(express.cookieParser());
   app.use(express.session({ secret: 'foobar' }));
+  app.use(express.bodyParser());
   app.use(everyauth.middleware());
   app.use(express.methodOverride());
   app.use(app.router);
-  app.set('view engine', 'jade');
-  app.set('views', __dirname + '/views');
   app.use(express.static(__dirname + '/public'));
   everyauth.helpExpress(app);
 });
@@ -68,13 +67,19 @@ app.configure('production', function(){
 // Routes
 
 app.get('/', function(req, res){
-  console.log("Got the index");
+    /*console.log(req.session);*/
   res.render('index', { title: 'Home' });
 });
 
 app.get('/private', function(req, res){
-  console.log("Got the protected");
-  res.render('private', {title: 'Protected'});
+    /*console.log(req.session);*/
+    if(req.session.auth && req.session.auth.loggedIn){
+      res.render('private', {title: 'Protected'});
+    }else{
+      console.log("The user is NOT logged in");
+      /*console.log(req.session);*/
+      res.redirect('/');
+    }
 });
 
 app.listen(3000);
