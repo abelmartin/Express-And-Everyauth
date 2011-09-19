@@ -9,16 +9,22 @@ html
     a#Home(href="/private") Private
     - if(everyauth.loggedIn)
       ul#Authed
-        li
-          Hi #{everyauth.twitter.user.name}!
-        li
-          img(src="#{everyauth.twitter.user.profile_image_url}")
-
-        // li= JSON.stringify(everyauth.twitter.user)
+        - if(everyauth.twitter)
+          li
+            Hi #{everyauth.twitter.user.name} from Twitter!
+          li
+            img(src="#{everyauth.twitter.user.profile_image_url}")
+        - if(everyauth.facebook)
+          li Hi #{everyauth.facebook.user.name} from Facebook!
+        li= JSON.stringify(everyauth)
         li
           a(href="/logout") Sign Out
     - else
       ul#Authenticate
         li
-          a(href="/auth/twitter") auth with twitter
+          a(href='/auth/twitter', style='border: 0px')
+            img(style='border: 0px', src='https://si0.twimg.com/images/dev/buttons/sign-in-with-twitter-l.png')
+        li
+          a(href='auth/facebook') Sign in with Facebook
+          
     != body
