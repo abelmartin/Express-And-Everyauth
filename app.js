@@ -1,5 +1,5 @@
 // Module dependencies.
-
+// Checkout ./conf_example.js to see how it can be done.
 var express = require('express'),
     everyauth = require('everyauth'),
     conf = require('./conf');
@@ -49,12 +49,6 @@ function addUser (source, sourceUser) {
 }
 
 everyauth.debug = true;
-
-/*everyauth.everymodule.findUserById( function (userId, callback) {*/
-/*User.findById(userId, callback);*/
-/*// callback has the signature, function (err, user) {...}*/
-/*});*/
-
 
 var app = module.exports = express.createServer();
 
