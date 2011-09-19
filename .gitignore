@@ -2,4 +2,4 @@
 *.swp
 *.swo
 node_modules
-conf
+conf.js
