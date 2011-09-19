@@ -14,9 +14,15 @@ html
             Hi #{everyauth.twitter.user.name} from Twitter!
           li
             img(src="#{everyauth.twitter.user.profile_image_url}")
+
         - if(everyauth.facebook)
           li Hi #{everyauth.facebook.user.name} from Facebook!
-        li= JSON.stringify(everyauth)
+
+        - if(everyauth.github)
+          li Hi #{everyauth.github.user.name} from GitHub!
+          li
+            img(src="https://secure.gravatar.com/avatar/#{everyauth.github.user.gravatar_id}")
+        // li= JSON.stringify(everyauth)
         li
           a(href="/logout") Sign Out
     - else
@@ -26,5 +32,7 @@ html
             img(style='border: 0px', src='https://si0.twimg.com/images/dev/buttons/sign-in-with-twitter-l.png')
         li
           a(href='auth/facebook') Sign in with Facebook
+        li
+          a(href='auth/github') Sign in with GitHub
           
     != body

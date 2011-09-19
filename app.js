@@ -8,6 +8,7 @@ var usersById = {};
 var nextUserId = 0;
 var usersByTwitId = {};
 var usersByFbId = {};
+var usersByGhId = {};
 
 everyauth
   .twitter
@@ -23,6 +24,14 @@ everyauth.facebook
   .appSecret(conf.fb.appSecret)
   .findOrCreateUser( function (session, accessToken, accessTokExtra, fbUserMetadata) {
       return usersByFbId[fbUserMetadata.id] || (usersByFbId[fbUserMetadata.id] = addUser('facebook', fbUserMetadata));
+  })
+  .redirectPath('/');
+
+everyauth.github
+  .appId(conf.github.appId)
+  .appSecret(conf.github.appSecret)
+  .findOrCreateUser( function (sess, accessToken, accessTokenExtra, ghUser) {
+      return usersByGhId[ghUser.id] || (usersByGhId[ghUser.id] = addUser('github', ghUser));
   })
   .redirectPath('/');
 
